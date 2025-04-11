@@ -20,7 +20,15 @@ import CreateGroupDialog from '@/components/Group/CreateGroupDialog';
 import GroupList from '@/components/Group/GroupList';
 import GroupMembers from '@/components/Group/GroupMembers';
 
-// Mock group data
+// Define the member type to match what GroupMembers component expects
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'member';
+};
+
+// Mock group data with properly typed roles
 const mockGroups = [
   {
     id: '1',
@@ -28,8 +36,8 @@ const mockGroups = [
     description: 'Apartment expenses',
     createdAt: new Date(2023, 2, 15),
     members: [
-      { id: 'user1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
-      { id: 'user2', name: 'Jane Smith', email: 'jane@example.com', role: 'member' }
+      { id: 'user1', name: 'John Doe', email: 'john@example.com', role: 'admin' as const },
+      { id: 'user2', name: 'Jane Smith', email: 'jane@example.com', role: 'member' as const }
     ]
   },
   {
@@ -38,9 +46,9 @@ const mockGroups = [
     description: 'Hawaii vacation expenses',
     createdAt: new Date(2023, 5, 1),
     members: [
-      { id: 'user1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
-      { id: 'user3', name: 'Bob Johnson', email: 'bob@example.com', role: 'member' },
-      { id: 'user4', name: 'Alice Brown', email: 'alice@example.com', role: 'member' }
+      { id: 'user1', name: 'John Doe', email: 'john@example.com', role: 'admin' as const },
+      { id: 'user3', name: 'Bob Johnson', email: 'bob@example.com', role: 'member' as const },
+      { id: 'user4', name: 'Alice Brown', email: 'alice@example.com', role: 'member' as const }
     ]
   }
 ];
@@ -114,7 +122,7 @@ const GroupsPage: React.FC = () => {
                       </TabsList>
                       <TabsContent value="members" className="py-4">
                         <GroupMembers 
-                          members={selectedGroup.members}
+                          members={selectedGroup.members as Member[]}
                           onAddMember={handleAddMember}
                           onRemoveMember={handleRemoveMember}
                         />

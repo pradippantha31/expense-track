@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-interface Member {
+export interface Member {
   id: string;
   name: string;
   email: string;

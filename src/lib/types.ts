@@ -34,11 +34,14 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
+  role?: 'admin' | 'member';
 }
 
 export interface Group {
   id: string;
   name: string;
+  description?: string;
+  createdAt?: Date;
   members: User[];
 }
 

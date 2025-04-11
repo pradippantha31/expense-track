@@ -2,14 +2,7 @@
 import React from 'react';
 import { Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface Group {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: Date;
-  members: any[];
-}
+import { Group } from '@/lib/types';
 
 interface GroupListProps {
   groups: Group[];
