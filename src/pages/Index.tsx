@@ -6,6 +6,7 @@ import Navbar from '@/components/Layout/Navbar';
 import ExpenseSummary from '@/components/Dashboard/ExpenseSummary';
 import ExpenseChart from '@/components/Dashboard/ExpenseChart';
 import RecentTransactions from '@/components/Dashboard/RecentTransactions';
+import QuickActions from '@/components/Dashboard/QuickActions';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -23,6 +24,11 @@ const Dashboard: React.FC = () => {
       food: 375.25,
       utility: 250,
       entertainment: 200,
+      shopping: 0,
+      travel: 0,
+      healthcare: 0,
+      education: 0,
+      other: 0,
     } as Record<ExpenseCategory, number>,
   };
 
@@ -101,6 +107,8 @@ const Dashboard: React.FC = () => {
             
             <div className="space-y-6">
               <ExpenseSummary summary={mockSummary} />
+              
+              <QuickActions />
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <ExpenseChart data={mockChartData} />

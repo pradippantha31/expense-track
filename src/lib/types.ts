@@ -51,3 +51,44 @@ export interface ExpenseSummary {
   balance: number;
   byCategory: Record<ExpenseCategory, number>;
 }
+
+// New types for better tracking
+export interface Budget {
+  id: string;
+  userId: string;
+  category: ExpenseCategory;
+  amount: number;
+  period: 'weekly' | 'monthly' | 'yearly';
+  startDate: Date;
+  endDate?: Date;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  message: string;
+  read: boolean;
+  date: Date;
+  type: 'alert' | 'info' | 'success' | 'warning';
+  relatedTo?: {
+    type: 'expense' | 'income' | 'budget' | 'group';
+    id: string;
+  };
+}
+
+export interface ExpenseReport {
+  id: string;
+  userId: string;
+  name: string;
+  dateRange: {
+    start: Date;
+    end: Date;
+  };
+  totalAmount: number;
+  categories: {
+    category: ExpenseCategory;
+    amount: number;
+    percentage: number;
+  }[];
+  createdAt: Date;
+}
