@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Wallet, PiggyBank, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, Wallet, PiggyBank, Users, Settings, Moon, Sun } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +10,11 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/hooks/use-theme';
 
 const AppSidebar: React.FC = () => {
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -41,6 +43,10 @@ const AppSidebar: React.FC = () => {
     },
   ];
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <Sidebar className="border-r">
       <SidebarHeader className="p-4">
@@ -60,7 +66,16 @@ const AppSidebar: React.FC = () => {
           ))}
         </nav>
       </SidebarContent>
-      <SidebarFooter className="px-2 py-4">
+      <SidebarFooter className="px-2 py-4 space-y-2">
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start sidebar-item"
+          onClick={toggleTheme}
+        >
+          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        </Button>
+        
         <Button asChild variant="ghost" className="sidebar-item w-full justify-start">
           <Link to="/settings">
             <Settings className="h-5 w-5" />

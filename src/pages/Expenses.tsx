@@ -8,8 +8,15 @@ import ExpenseList from '@/components/Expense/ExpenseList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Expense, ExpenseCategory } from '@/lib/types';
 import { toast } from 'sonner';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 const ExpensesPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAddPage = location.pathname === '/expenses/new';
+  
   // Mock data for demonstration
   const [expenses, setExpenses] = useState<Expense[]>([
     {
@@ -67,6 +74,8 @@ const ExpensesPage: React.FC = () => {
     };
 
     setExpenses([newExpense, ...expenses]);
+    toast.success("Expense added successfully");
+    navigate('/expenses');
   };
 
   const handleEditExpense = (expense: Expense) => {
@@ -80,6 +89,9 @@ const ExpensesPage: React.FC = () => {
     toast.success("Expense deleted successfully");
   };
 
+  // Determine which tab should be active
+  const activeTab = isAddPage ? "add" : "list";
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -87,9 +99,22 @@ const ExpensesPage: React.FC = () => {
         <div className="flex-1">
           <Navbar />
           <main className="container py-6">
-            <h1 className="text-3xl font-bold tracking-tight mb-6">Expenses</h1>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold tracking-tight">Expenses</h1>
+              {!isAddPage && (
+                <Button onClick={() => navigate('/expenses/new')}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Expense
+                </Button>
+              )}
+            </div>
             
-            <Tabs defaultValue="list" className="w-full">
+            <Tabs value={activeTab} className="w-full" onValueChange={(value) => {
+              if (value === "add") {
+                navigate('/expenses/new');
+              } else {
+                navigate('/expenses');
+              }
+            }}>
               <TabsList className="mb-4">
                 <TabsTrigger value="list">All Expenses</TabsTrigger>
                 <TabsTrigger value="add">Add Expense</TabsTrigger>
