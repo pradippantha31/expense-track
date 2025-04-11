@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -11,11 +13,49 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { toast } from 'sonner';
 
+const loginSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  password: z.string().min(1, { message: 'Password is required' }),
+});
+
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+  
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      // This is where Supabase login will be integrated
+      console.log('Login with:', values);
+      toast.success('Login successful');
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Invalid email or password. Please try again.');
+    }
+  };
+
   const handleGoogleLogin = () => {
-    toast.info("Gmail login requires Supabase integration. Please connect your project to Supabase first.");
+    // This is where Supabase Google Auth will be integrated
+    toast.info("Google login requires Supabase integration. Please connect your project to Supabase first.");
   };
 
   return (
@@ -28,6 +68,78 @@ const Login: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Enter your email"
+                          type="email"
+                          className="pl-10"
+                          autoComplete="email"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Password</FormLabel>
+                      <Link 
+                        to="/reset-password" 
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Enter your password"
+                          type="password"
+                          className="pl-10"
+                          autoComplete="current-password"
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full mt-6">
+                Sign In
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </form>
+          </Form>
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          
           <div className="space-y-2">
             <Button 
               variant="outline" 
@@ -56,18 +168,6 @@ const Login: React.FC = () => {
               </svg>
               Continue with Google
             </Button>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-          <div className="space-y-2">
             <Button 
               asChild
               variant="secondary" 
@@ -80,8 +180,14 @@ const Login: React.FC = () => {
             </Button>
           </div>
         </CardContent>
-        <CardFooter className="text-center text-sm text-muted-foreground">
-          <p className="w-full">
+        <CardFooter className="flex flex-col space-y-4">
+          <div className="text-center text-sm">
+            Don't have an account?{' '}
+            <Link to="/signup" className="underline underline-offset-4 hover:text-primary">
+              Sign up
+            </Link>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
             By continuing, you agree to our{' '}
             <Link to="/terms" className="underline underline-offset-4 hover:text-primary">
               Terms of Service
